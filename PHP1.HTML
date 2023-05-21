@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Міні-казино</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ccba14;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 100;
+        }
+
+        .casino {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            font-size: 43px;
+            margin-bottom: 27px;
+            color: #fff;
+        }
+
+        .slot-machine {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 43px;
+        }
+
+        .slot {
+            width: 200px;
+            height: 100px;
+            background-color: #ffc107;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            border-radius: 40px;
+        }
+
+        .animate-neon {
+            animation-name: neon;
+            animation-duration: 4.5s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes neon {
+            0% {
+                text-shadow: 0 0 8px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ffc107, 0 0 70px #ffc107, 0 0 80px #ffc107, 0 0 100px #ffc107, 0 0 150px #ffc107;
+            }
+            100% {
+                text-shadow: 0 0 8px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ffc107, 0 0 70px #ffc107, 0 0 80px #ffc107, 0 0 100px #ffc107, 0 0 150px #ffc107;
+            }
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #fbbc05;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 40px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .btn-pink {
+            background-color: #ff69b4;
+            padding: 20px 50px;
+            font-size: 24px;
+            border-radius: 50px;
+            margin-top: 210px;
+        }
+
+        #balance {
+            margin-top: 10px;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        #error-message {
+            margin-top: 15px;
+            font-size: 54px;
+            color: #ff0000;
+        }
+
+        #add-balance-form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #add-balance-input {
+            padding: 10px;
+            font-size: 26px;
+            margin-bottom: 20px;
+        }
+
+        #add-balance-button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="casino">
+        <h1>Міні-казино</h1>
+        <div class="slot-machine">
+            <div class="slot animate-neon">7</div>
+            <div class="slot animate-neon">7</div>
+            <div class="slot animate-neon">7</div>
+        </div>
+        <button class="btn" onclick="spin()">Спін</button>
+        <div id="balance">Баланс: 5460</div>
+        <div id="error-message"></div>
+        <div id="add-balance-form">
+            <input type="number" id="add-balance-input" placeholder="Сума поповнення" min="1" max="3500">
+            <button id="add-balance-button" onclick="addBalance()">Поповнити баланс</button>
+        </div>
+        <a href="file:///C:/Users/PC/Desktop/index1.HTML" class="btn btn-pink">калькулятор</a>
+    </div>
+
+    <script>
+        var balance = 5400;
+        var balanceElement = document.getElementById('balance');
+        var errorMessageElement = document.getElementById('error-message');
+
+        function spin() {
+            var slots = document.getElementsByClassName('slot');
+            var symbols = ['6', '7', 'BAR', 'CHERRY', 'LEMON', '5'];
+            var chances = [45, 40, 13, 11, 11, 50];
+
+            if (balance >= -2500) {
+                for (var i = 0; i < slots.length; i++) {
+                    var randomChance = Math.floor(Math.random() * 100);
+                    var randomIndex;
+
+                    if (randomChance < chances[0]) {
+                        randomIndex = 0; // '6' has 8% chance
+                    } else if (randomChance < chances[0] + chances[1]) {
+                        randomIndex = 1; // '7' has 8% chance
+                    } else if (randomChance < chances[0] + chances[1] + chances[2]) {
+                        randomIndex = 2; // 'BAR' has 12% chance
+                    } else if (randomChance < chances[0] + chances[1] + chances[2] + chances[3]) {
+                        randomIndex = 3; // 'CHERRY' has 20% chance
+                    } else if (randomChance < chances[0] + chances[1] + chances[2] + chances[3] + chances[4]) {
+                        randomIndex = 4; // 'LEMON' has 20% chance
+                    } else {
+                        randomIndex = 5; // 'ORANGE' has 32% chance
+                    }
+
+                    slots[i].innerText = symbols[randomIndex];
+                }
+
+                var combination = slots[0].innerText + slots[1].innerText + slots[2].innerText;
+                if (combination === '777' || combination === '666') {
+                    balance += 550;
+                } else if (combination === '555') {
+                    balance += 450;
+                } else {
+                    balance -= 300;
+                }
+
+                balanceElement.innerText = 'Баланс: ' + balance;
+                errorMessageElement.innerText = '';
+            } else {
+                errorMessageElement.innerText = 'Ви не можете грати, ваш баланс: ' + balance;
+            }
+        }
+
+        function addBalance() {
+            var amountInput = document.getElementById('add-balance-input');
+            var amount = parseInt(amountInput.value);
+
+            if (!isNaN(amount) && amount > 0 && amount <= 3500) {
+                balance += amount;
+                balanceElement.innerText = 'Баланс: ' + balance;
+                amountInput.value = '';
+                errorMessageElement.innerText = '';
+            } else {
+                errorMessageElement.innerText = 'Введіть коректну суму поповнення (максимум 3500)';
+            }
+        }
+    </script>
+</body>
+</html>
